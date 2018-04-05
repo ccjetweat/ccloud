@@ -20,13 +20,13 @@
         <th>{{temp.timgName}}</th>
         <th>
             <span>
-                <form action="{%url 'chmapp:tempmod'%}" method="post">
+                <form style="display: inline" action="{%url 'chmapp:tempmod'%}" method="post">
                     <input type="hidden" name="tempname" value="{{temp.tname}}">
                     <input type="submit" name="tempmod" value="修改">
                 </form>
             </span>
             <span>
-                <form action="{%url 'chmapp:tempdel'%}" method="post">
+                <form style="display: inline" action="{%url 'chmapp:tempdel'%}" method="post">
                     <input type="hidden" name="tempname" value="{{temp.tname}}">
                     <input type="submit" name="tempdel" value="删除">
                 </form>

@@ -24,5 +24,6 @@ urlpatterns = [
     url(r'^host/$', views.host, name='host'),
     url(r'^vmadd/$', views.vmadd, name='vmadd'),
     url(r'^vmdefine/$', views.vmdefine, name='vmdefine'),
-    url(r'^host/vmopen/$', views.vmopen, name='vmopen'),
+    url(r'^open/$', views.open, name='open'),
+    url(r'^shutdown/$', views.shutdown, name='shutdown'),
 ]

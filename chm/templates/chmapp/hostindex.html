@@ -13,16 +13,14 @@
         <th>{{host.hstatus}}</th>
         <th>{{host.haddr}}</th>
         <th>
-            <!--<span>-->
-            <!--<select name="vmOperate" onchange="javascript:window.location.href=this.value;">-->
-                <!--<option value="">操作</option>-->
-                <!--<option value="vmopen">开启</option>-->
-                <!--<option value="vmclose">关闭</option>-->
-                <!--<option value="vmpoweroff">断电</option>-->
-                <!--<option value="vmremove">删除</option>-->
-                <!--<option value="vmconnect">连接</option>-->
-            <!--</select>-->
-            <!--</span>-->
+            <form style="display: inline" action="{%url 'chmapp:open'%}" method="post">
+                <input type="hidden" name="hostname" value="{{host.hname}}">
+                <input type="submit" name="submit" value="开启">
+            </form>
+            <form style="display: inline" action="{%url 'chmapp:shutdown'%}" method="post">
+                <input type="hidden" name="hostname" value="{{host.hname}}">
+                <input type="submit" name="submit" value="关机">
+            </form>
         </th>
     </tr>
     {%endfor%}

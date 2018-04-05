@@ -18,13 +18,13 @@
         <th>{{user.isDelete}}</th>
         <th>
             <span>
-                <form action="{%url 'chmapp:usermod'%}" method="post">
+                <form style="display: inline" action="{%url 'chmapp:usermod'%}" method="post">
                     <input type="hidden" name="name" value="{{user.uname}}">
                     <input type="submit" name="usermod" value="修改">
                 </form>
             </span>
             <span>
-                <form action="{%url 'chmapp:userdel'%}" method="post">
+                <form style="display: inline" action="{%url 'chmapp:userdel'%}" method="post">
                     <input type="hidden" name="name" value="{{user.uname}}">
                     <input type="submit" name="userdel" value="删除">
                 </form>

@@ -265,12 +265,25 @@ def vmdefine(request):
         return redirect(reverse('chmapp:host'))
 
 
-def vmopen(request):
-    # hostname = request.GET.get('hostname')
-    # if startVM(URL, hostname):
-    #     hostObj = Host.objects.get(hname=hostname)
-    #     hostObj.hstatus = getVMStatus(URL, hostname)
-    #     hostObj.haddr = getInterfaceAddress(URL, hostname)
-    #     hostObj.save()
-    return redirect(reverse('chmapp:host'))
+def open(request):
+    if request.method == 'POST':
+        hostname = request.POST.get('hostname')
+        flag, status, addr = startVM(URL, hostname)
+        if flag:
+            hostObj = Host.objects.get(hname=hostname)
+            hostObj.hstatus = status
+            hostObj.haddr = addr
+            hostObj.save()
+            return redirect(reverse('chmapp:host'))
+
+
+def shutdown(request):
+    if request.method == 'POST':
+        hostname = request.POST.get('hostname')
+        flag, status = shutdownVM(URL, hostname)
+        if flag:
+            hostObj = Host.objects.get(hname=hostname)
+            hostObj.hstatus = status
+            hostObj.save()
+            return redirect(reverse('chmapp:host'))
 

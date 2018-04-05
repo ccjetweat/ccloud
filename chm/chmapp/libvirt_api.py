@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from tools import Tool
-import libvirt
 import sys
 import libvirt
 from xml_tools import XMLTool
 import os
+import time
+
 """
 libvirt.VIR_DOMAIN_NOSTATE      0
 libvirt.VIR_DOMAIN_RUNNING      1
@@ -51,7 +51,6 @@ def createVM(url, domainXMLString):
         # print(dom.state())
         # [5, 0]
         # 5 --> VIR_DOMAIN_SHUTOFF
-        # 0 --> VIR_DOMAIN_SHUTOFF_UNKNOWN
     finally:
         conn.close()
         return flag
@@ -59,45 +58,59 @@ def createVM(url, domainXMLString):
 
 def startVM(url, domName):
     try:
+        flag, status, addr = True, '', ''
         conn = libvirt.open(url)
         if conn is None:
             flag = False
-        else:
-            flag = True
         dom = conn.lookupByName(domName)
         if dom is None:
             flag = False
-        else:
-            flag = True
         # print(dom.state())   [5, 0]  VIR_DOMAIN_SHUTOFF_UNKNOWN
         # print(dom.state())   [5, 1]  VIR_DOMAIN_SHUTOFF_SHUTDOWN
         # print(dom.state())   [5, 2]  VIR_DOMAIN_SHUTOFF_DESTROYED
-        if dom.create() < 0:
-            # print('客户机开启失败')
-            # dom.reboot()
-            flag = False
-        # print(dom.state())   [1, 1]
+        if dom.state()[0] == libvirt.VIR_DOMAIN_SHUTOFF:
+            if dom.create() >= 0:
+                while dom.state()[0] != libvirt.VIR_DOMAIN_RUNNING:
+                    continue
+                status = '活动'
         else:
-            flag = True
+            flag = False
+
+        time.sleep(8)
+        ifaces = dom.interfaceAddresses(libvirt.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT, 0)
+        for (name, value) in ifaces.iteritems():
+            if value['addrs']:
+                for ipaddr in value['addrs']:
+                    if ipaddr['type'] == libvirt.VIR_IP_ADDR_TYPE_IPV4 and ipaddr['addr'] != '127.0.0.1':
+                        addr = ipaddr['addr']
+
     finally:
         conn.close()
-        return flag
+        return flag, status, addr
 
 
 def shutdownVM(url, domName):
     try:
+        flag, status = True, ''
         conn = libvirt.open(url)
         if conn is None:
-            print('连接创建失败')
+            flag = False
         dom = conn.lookupByName(domName)
         if dom is None:
-            print('获取域失败')
-        # print(dom.state())
-        if dom.shutdown() < 0:
-            print('关闭客户机失败')
+            flag = False
+
+        if dom.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
+            if dom.shutdown() >= 0:
+                time.sleep(5)
+                while dom.state()[0] != libvirt.VIR_DOMAIN_SHUTOFF:
+                    continue
+                status = '关闭'
+        else:
+            flag = False
 
     finally:
         conn.close()
+        return flag, status
 
 
 def destroyVM(url, domName):
@@ -132,34 +145,6 @@ def removeVM(url, domName):
         conn.close()
 
 
-def getInterfaceAddress(url, domName):
-    try:
-        conn = libvirt.open(url)
-        dom = conn.lookupByName(domName)
-        ifaces = dom.interfaceAddresses(libvirt.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT, 0)
-        for (name, value) in ifaces.iteritems():
-            if value['addrs']:
-                for ipaddr in value['addrs']:
-                    if ipaddr['type'] == libvirt.VIR_IP_ADDR_TYPE_IPV4 and ipaddr['addr'] != '127.0.0.1':
-                        return ipaddr['addr']
-    finally:
-        conn.close()
-
-
-def getVMStatus(url, domName):
-    try:
-        conn = libvirt.open(url)
-        dom = conn.lookupByName(domName)
-        if dom.state()[0] == libvirt.VIR_DOMAIN_SHUTOFF:
-            return '关机'
-        elif dom.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
-            return '活动'
-        else:
-            return '未知'
-    finally:
-        conn.close()
-
-
 if __name__ == '__main__':
     URL = 'qemu:///system'
     # with open('/root/KVM/demo.xml', 'rb') as f:
@@ -172,5 +157,6 @@ if __name__ == '__main__':
     # ipaddr = getInterfaceAddress(url, 'demo')
     # print(ipaddr)
     hostname = 'nginxcentos7'
-    if startVM(URL, hostname):
-        print('OK')
+    conn = libvirt.open(URL)
+    dom = conn.lookupByName(hostname)
+    print(dom.state()[0])
