@@ -1,0 +1,9 @@
+{%extends 'chmapp/index.html'%}
+{%block index_child%}
+添加新镜像:
+<form action="{%url 'chmapp:imagesave'%}" method="post">
+镜像名: <input type="text" name="imgname" value="">例如: centos7.qcow2<br><br>
+路&nbsp;&nbsp;径: <input type="text" name="imgpath" value=""><br><br>
+<input type="submit" name="imgsubmit" value="保存">
+</form>
+{%endblock%}

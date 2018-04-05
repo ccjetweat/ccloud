@@ -1,0 +1,13 @@
+{%extends 'chmapp/index.html'%}
+{%block index_child%}
+<form action="{%url 'chmapp:vmdefine'%}" method="post">
+云机作用于什么项目: <input type="text" name="appName" value="">
+选择模版:
+    <select name="tempName">
+        {%for temp in tempList%}
+        <option value="{{temp.tname}}">{{temp.tname}}</option>
+        {%endfor%}
+    </select>
+    <input type="submit" name="addVMSubmit" value="保存">
+</form>
+{%endblock%}

@@ -1,0 +1,46 @@
+{%extends 'chmapp/index.html'%}
+{%block index_child%}
+<table border="2">
+    <tr>
+        <th>全选</th>
+        <th>用户</th>
+        <th>简介</th>
+        <th>状态</th>
+        <th>删除</th>
+        <th>操作</th>
+    </tr>
+    {%for user in userList%}
+    <tr>
+        <th>单选</th>
+        <th>{{user.uname}}</th>
+        <th>{{user.udesc}}</th>
+        <th>{{user.isLogin}}</th>
+        <th>{{user.isDelete}}</th>
+        <th>
+            <span>
+                <form action="{%url 'chmapp:usermod'%}" method="post">
+                    <input type="hidden" name="name" value="{{user.uname}}">
+                    <input type="submit" name="usermod" value="修改">
+                </form>
+            </span>
+            <span>
+                <form action="{%url 'chmapp:userdel'%}" method="post">
+                    <input type="hidden" name="name" value="{{user.uname}}">
+                    <input type="submit" name="userdel" value="删除">
+                </form>
+            </span>
+        </th>
+    </tr>
+    {%endfor%}
+</table>
+
+{%ifequal username "admin"%}
+<span>
+    <form action="{%url 'chmapp:useradd'%}" method="post">
+        <!--<input type="hidden" name="name" value="{{user.uname}}">-->
+        <input type="submit" name="useradd" value="添加">
+    </form>
+</span>
+{%endifequal%}
+
+{%endblock%}

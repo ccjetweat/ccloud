@@ -1,0 +1,16 @@
+{%extends 'chmapp/index.html'%}
+{%block index_child%}
+修改模版:
+<form action="{%url 'chmapp:tempsave'%}" method="post">
+模版名: {{tempObj.tname}}<input type="hidden" name="tempname" value="{{tempObj.tname}}"><br><br>
+CPU核数: <input type="text" name="cpus" value=""><br><br>
+内&nbsp;&nbsp;&nbsp;存: <input type="text" name="memory" value=""><br><br>
+镜像名:
+<select name="imageSelect">
+    {%for image in imageList%}
+    <option value="{{image.iname}}">{{image.iname}}</option>
+    {%endfor%}
+</select><br>
+<input type="submit" name="tempsubmit" value="保存">
+</form>
+{%endblock%}

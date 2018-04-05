@@ -1,0 +1,17 @@
+/*超链接样式设置*/
+a {
+    text-decoration: none;
+}
+
+a:link {
+    color: blue;
+}
+a:visited {
+    color: bisque;
+}
+a:hover {
+    color: red;
+}
+a:active {
+    color: #FFFFFF;
+}

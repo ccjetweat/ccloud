@@ -1,0 +1,33 @@
+{%extends 'chmapp/index.html'%}
+{%block index_child%}
+<table border="2">
+    <tr>
+        <th>云机</th>
+        <th>状态</th>
+        <th>IP</th>
+        <th>操作</th>
+    </tr>
+    {%for host in hostList%}
+    <tr>
+        <th>{{host.hname}}</th>
+        <th>{{host.hstatus}}</th>
+        <th>{{host.haddr}}</th>
+        <th>
+            <!--<span>-->
+            <!--<select name="vmOperate" onchange="javascript:window.location.href=this.value;">-->
+                <!--<option value="">操作</option>-->
+                <!--<option value="vmopen">开启</option>-->
+                <!--<option value="vmclose">关闭</option>-->
+                <!--<option value="vmpoweroff">断电</option>-->
+                <!--<option value="vmremove">删除</option>-->
+                <!--<option value="vmconnect">连接</option>-->
+            <!--</select>-->
+            <!--</span>-->
+        </th>
+    </tr>
+    {%endfor%}
+</table>
+<form action="{%url 'chmapp:vmadd'%}" method="post">
+    <input type="submit" name="vmadd" value="添加">
+</form>
+{%endblock%}

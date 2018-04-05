@@ -1,0 +1,35 @@
+{%extends 'chmapp/index.html'%}
+{%block index_child%}
+<table border="2">
+    <tr>
+        <th>全选</th>
+        <th>镜像</th>
+        <th>路径</th>
+        {%ifequal username 'admin'%}
+        <th>操作</th>
+        {%endifequal%}
+    </tr>
+    {%for image in imageList%}
+    <tr>
+        <th>单选</th>
+        <th>{{image.iname}}</th>
+        <th>{{image.iaddr}}</th>
+        {%ifequal username 'admin'%}
+        <th>
+            <span>
+                <form action="{%url 'chmapp:imagedel'%}" method="post">
+                    <input type="hidden" name="imgname" value="{{image.iname}}">
+                    <input type="submit" name="imagedel" value="删除">
+                </form>
+            </span>
+        </th>
+        {%endifequal%}
+    </tr>
+    {%endfor%}
+</table>
+<span>
+    <form action="{%url 'chmapp:imageadd'%}" method="post">
+        <input type="submit" name="imageadd" value="添加">
+    </form>
+</span>
+{%endblock%}

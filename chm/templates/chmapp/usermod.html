@@ -1,0 +1,10 @@
+{%extends 'chmapp/index.html'%}
+{%block index_child%}
+修改用户信息:<br>
+<form action="{%url 'chmapp:usersave'%}" method="post">
+用户名: {{username}}<br><br>
+密&nbsp;&nbsp;码: <input type="text" name="password" value=""><br><br>
+描&nbsp;&nbsp;述: <input type="text" name="description" value=""><br><br>
+<input type="submit" name="submit" value="保存">
+</form>
+{%endblock%}

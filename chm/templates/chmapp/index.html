@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>管理首页</title>
+    <!--{% load static from staticfiles %}-->
+    <!--<link rel="stylesheet" href="{% static 'chmapp/css/style.css' %}" type="text/css">-->
+    <style type="text/css">
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span>{{username}}</span>&nbsp;&nbsp;<span>{{status}}</span>&nbsp;&nbsp;
+        <span><a class="login" href="{% url 'chmapp:quite' %}">退出</a><br><hr></span>
+    </div>
+    <div class="title">
+        <a href="{% url 'chmapp:user' %}">用户管理</a>
+        <a href="{% url 'chmapp:host' %}">云机管理</a>
+        <a href="{% url 'chmapp:image' %}">镜像管理</a>
+        <a href="{% url 'chmapp:template' %}">模版管理</a>
+        <br><hr>
+    </div>
+    <div class="body">
+        {%block index_child%}
+
+        {%endblock index_child%}
+    </div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+{%extends 'chmapp/index.html'%}
+{%block index_child%}
+<table border="2">
+    <tr>
+        <th>全选</th>
+        <th>模版</th>
+        <th>CPU</th>
+        <th>内存</th>
+        <th>MAC</th>
+        <th>镜像</th>
+        <th>操作</th>
+    </tr>
+    {%for temp in tempList%}
+    <tr>
+        <th>单选</th>
+        <th>{{temp.tname}}</th>
+        <th>{{temp.tcpus}}</th>
+        <th>{{temp.tmemory}}</th>
+        <th>{{temp.tmac}}</th>
+        <th>{{temp.timgName}}</th>
+        <th>
+            <span>
+                <form action="{%url 'chmapp:tempmod'%}" method="post">
+                    <input type="hidden" name="tempname" value="{{temp.tname}}">
+                    <input type="submit" name="tempmod" value="修改">
+                </form>
+            </span>
+            <span>
+                <form action="{%url 'chmapp:tempdel'%}" method="post">
+                    <input type="hidden" name="tempname" value="{{temp.tname}}">
+                    <input type="submit" name="tempdel" value="删除">
+                </form>
+            </span>
+        </th>
+    </tr>
+    {%endfor%}
+</table>
+<span>
+    <form action="{%url 'chmapp:tempadd'%}" method="post">
+        <input type="submit" name="tempadd" value="添加">
+    </form>
+</span>
+{%endblock%}

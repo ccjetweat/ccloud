@@ -1,0 +1,17 @@
+{%extends 'chmapp/index.html'%}
+{%block index_child%}
+添加新模版:
+<form action="{%url 'chmapp:tempsave'%}" method="post">
+模版名: <input type="text" name="tempname" value=""><br><br>
+CPU核数: <input type="text" name="cpus" value=""><br><br>
+内存(单位:M): <input type="text" name="memory" value=""><br><br>
+镜像:
+<select name="imageSelect">
+    <option value="镜像">镜像</option>
+    {%for image in imageList%}
+    <option value="{{image.iname}}">{{image.iname}}</option>
+    {%endfor%}
+</select><br>
+<input type="submit" name="tempsubmit" value="保存">
+</form>
+{%endblock%}
