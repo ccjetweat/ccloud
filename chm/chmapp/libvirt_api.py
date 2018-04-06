@@ -115,34 +115,45 @@ def shutdownVM(url, domName):
 
 def destroyVM(url, domName):
     try:
+        flag, status = True, ''
         conn = libvirt.open(url)
         if conn is None:
-            print('连接创建失败')
+            flag = False
         dom = conn.lookupByName(domName)
         if dom is None:
-            print('获取域失败')
-        print(dom.state())
-        if dom.destroy() < 0:
-            print('强制关闭客户机失败')
+            flag = False
+
+        if dom.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
+            if dom.destroy() >= 0:
+                time.sleep(3)
+                while dom.state()[0] != libvirt.VIR_DOMAIN_SHUTOFF:
+                    continue
+                status = '关闭'
+        else:
+            flag = False
+
     finally:
         conn.close()
+        return flag, status
 
 
 def removeVM(url, domName):
     try:
+        flag = True
         conn = libvirt.open(url)
         if conn is None:
-            print('连接创建失败')
+            flag = False
         dom = conn.lookupByName(domName)
         if dom is None:
-            print('获取域失败')
-        state, reason = dom.state()
-        if state == libvirt.VIR_DOMAIN_RUNNING:
-            print('虚拟机正在运行')
+            flag = False
+        if dom.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
+            flag = False
         else:
             dom.undefineFlags(0)
+            time.sleep(2)
     finally:
         conn.close()
+        return flag
 
 
 if __name__ == '__main__':

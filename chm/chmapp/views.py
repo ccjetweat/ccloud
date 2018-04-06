@@ -256,7 +256,7 @@ def vmdefine(request):
                 newVM.vtempname = tempObj
                 newHost = Host()
                 newHost.hname = appName + tempObj.tname
-                newHost.hstatus = getVMStatus(URL, newHost.hname)
+                newHost.hstatus = '关闭'
                 newHost.haddr = '暂无'
                 newHost.belong = userObj
                 newVM.save()
@@ -287,3 +287,23 @@ def shutdown(request):
             hostObj.save()
             return redirect(reverse('chmapp:host'))
 
+
+def shutoff(request):
+    if request.method == 'POST':
+        hostname = request.POST.get('hostname')
+        flag, status = shutdownVM(URL, hostname)
+        if flag:
+            hostObj = Host.objects.get(hname=hostname)
+            hostObj.hstatus = status
+            hostObj.save()
+            return redirect(reverse('chmapp:host'))
+
+
+def remove(request):
+    if request.method == 'POST':
+        hostname = request.POST.get('hostname')
+        if removeVM(URL, hostname):
+            hostObj = Host.objects.get(hname=hostname)
+            hostObj.isDelete = True
+            hostObj.save()
+            return redirect(reverse('chmapp:host'))

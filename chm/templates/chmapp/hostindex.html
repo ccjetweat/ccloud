@@ -21,6 +21,14 @@
                 <input type="hidden" name="hostname" value="{{host.hname}}">
                 <input type="submit" name="submit" value="关机">
             </form>
+            <form style="display: inline" action="{%url 'chmapp:shutoff'%}" method="post">
+                <input type="hidden" name="hostname" value="{{host.hname}}">
+                <input type="submit" name="submit" value="断电">
+            </form>
+            <form style="display: inline" action="{%url 'chmapp:remove'%}" method="post">
+                <input type="hidden" name="hostname" value="{{host.hname}}">
+                <input type="submit" name="submit" value="删除">
+            </form>
         </th>
     </tr>
     {%endfor%}

@@ -26,4 +26,6 @@ urlpatterns = [
     url(r'^vmdefine/$', views.vmdefine, name='vmdefine'),
     url(r'^open/$', views.open, name='open'),
     url(r'^shutdown/$', views.shutdown, name='shutdown'),
+    url(r'^shutoff/$', views.shutoff, name='shutoff'),
+    url(r'^remove/$', views.remove, name='remove'),
 ]
