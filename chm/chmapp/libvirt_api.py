@@ -20,11 +20,10 @@ src_xml_path = r'/root/KVM/centos7u4.xml'
 
 
 def xmlConfig(template, image, appName):
-    domName = appName + template.tname
+    domName = appName + '-' + template.tname
     xmlTool = XMLTool(src_xml_path)
     xmlTool.modifyElementText('name', 'vm_name', domName)
     xmlTool.modifyElementText('uuid', 'vm_uuid', str(template.tuuid))
-    print(template.tuuid)
     xmlTool.modifyElementText('currentMemory', 'vm_mem', str(template.tmemory*1024))
     xmlTool.modeifyElementAttrib('vcpu', 'current', 'vm_cpus', str(template.tcpus))
     imagePath = os.path.join(image.iaddr, image.iname)
@@ -33,13 +32,13 @@ def xmlConfig(template, image, appName):
 
     xml_template_path = '/root/KVM/'+domName+'.xml'
     xmlTool.writeToFile(xml_template_path)
-    return xml_template_path
+    return xml_template_path, domName
 
 
 def createVM(url, domainXMLString):
     try:
         conn = libvirt.open(url)
-        if conn is None:
+        if conn is not None:
             flag = True
         else:
             flag = False
@@ -70,23 +69,23 @@ def startVM(url, domName):
         # print(dom.state())   [5, 2]  VIR_DOMAIN_SHUTOFF_DESTROYED
         if dom.state()[0] == libvirt.VIR_DOMAIN_SHUTOFF:
             if dom.create() >= 0:
-                while dom.state()[0] != libvirt.VIR_DOMAIN_RUNNING:
-                    continue
-                status = '活动'
+                if dom.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
+                    status = '活动'
         else:
             flag = False
 
-        time.sleep(8)
+        time.sleep(9)
         ifaces = dom.interfaceAddresses(libvirt.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT, 0)
         for (name, value) in ifaces.iteritems():
             if value['addrs']:
                 for ipaddr in value['addrs']:
                     if ipaddr['type'] == libvirt.VIR_IP_ADDR_TYPE_IPV4 and ipaddr['addr'] != '127.0.0.1':
-                        addr = ipaddr['addr']
+                        address = ipaddr['addr']
 
     finally:
         conn.close()
-        return flag, status, addr
+        print(addr)
+        return flag, status, address
 
 
 def shutdownVM(url, domName):
@@ -167,7 +166,16 @@ if __name__ == '__main__':
     # removeVM(url, 'demo')
     # ipaddr = getInterfaceAddress(url, 'demo')
     # print(ipaddr)
-    hostname = 'nginxcentos7'
+    # hostname = 'demo'
     conn = libvirt.open(URL)
-    dom = conn.lookupByName(hostname)
-    print(dom.state()[0])
+    dom = conn.lookupByName('mysql-centos7')
+    # print(dom.getSysinfo())
+    # with open('/root/KVM/nginx-centos7.xml', 'r+') as f:
+    #     print(f.read())
+    ifaces = dom.interfaceAddresses(libvirt.VIR_DOMAIN_INTERFACE_ADDRESSES_SRC_AGENT, 0)
+    for (name, value) in ifaces.iteritems():
+        if value['addrs']:
+            for ipaddr in value['addrs']:
+                if ipaddr['type'] == libvirt.VIR_IP_ADDR_TYPE_IPV4 and ipaddr['addr'] != '127.0.0.1':
+                    addr = ipaddr['addr']
+    print(addr)

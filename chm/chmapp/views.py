@@ -6,9 +6,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
 from .models import User, Image, Template, Host, VM
 from tools import Tool
-import os
 import commands
 from libvirt_api import *
+import os
 
 URL = 'qemu:///system'
 
@@ -16,7 +16,16 @@ URL = 'qemu:///system'
 # Create your views here.
 # 登陆页面
 def login(request):
-    return render(request, 'chmapp/login.html')
+    try:
+        user = User.objects.get(uname='admin', isDelete=False)
+        return render(request, 'chmapp/login.html')
+    except BaseException as e:
+        initUser = User()
+        initUser.uname = 'admin'
+        initUser.upasswd = 'admin123'
+        initUser.udesc = '管理员'
+        initUser.save()
+        return render(request, 'chmapp/login.html')
 
 
 # 验证信息
@@ -153,7 +162,7 @@ def imagesave(request):
             newImage.iaddr = imagePath
             srcPath = '/root/KVM/centos7u4.qcow2'
             newPath = os.path.join(imagePath, imageName)
-            status, output = commands.getstatusoutput('qemu-img create -f qcow2 -b '+srcPath+' '+newPath)
+            status = commands.getstatusoutput('qemu-img create -f qcow2 -b '+srcPath+' '+newPath)[0]
             if status == 0:
                 newImage.save()
         finally:
@@ -203,7 +212,7 @@ def tempsave(request):
             temp = Template.objects.get(tname=tempName)
             temp.tname = tempName
             temp.tcpus = int(request.POST.get('cpus'))
-            temp.tmemory = int(request.POST.get('memory')) * 1024
+            temp.tmemory = int(request.POST.get('memory'))
             temp.tmac = Tool.randomMAC()
             image = Image.objects.get(iname=request.POST.get('imageSelect'))
             temp.timgName = image
@@ -212,7 +221,7 @@ def tempsave(request):
             newTemp = Template()
             newTemp.tname = request.POST.get('tempname')
             newTemp.tcpus = int(request.POST.get('cpus'))
-            newTemp.tmemory = int(request.POST.get('memory')) * 1024
+            newTemp.tmemory = int(request.POST.get('memory'))
             newTemp.tmac = Tool.randomMAC()
             image = Image.objects.get(iname=request.POST.get('imageSelect'))
             newTemp.timgName = image
@@ -227,14 +236,14 @@ def host(request):
     if currentUser == 'admin':
         hostList = Host.objects.all().filter(isDelete=False)
     else:
-        hostList = Host.objects.filter(belong=currentUser).filter(isDelete=False)
+        hostList = Host.objects.filter(belong=currentUser, isDelete=False)
     return render(request, 'chmapp/hostindex.html', {'username': currentUser, 'status': status, 'hostList': hostList})
 
 
 def vmadd(request):
     currentUser = request.session.get('username')
     status = getUserStatus(currentUser)
-    tempList = Template.objects.all()
+    tempList = Template.objects.filter(isDelete=False)
     return render(request, 'chmapp/vmadd.html', {'username': currentUser, 'status': status, 'tempList': tempList})
 
 
@@ -246,22 +255,21 @@ def vmdefine(request):
         tempName = request.POST.get('tempName')
         tempObj = Template.objects.get(tname=tempName)
         imgObj = tempObj.timgName
-        fxml = xmlConfig(tempObj, imgObj, appName)
-        with open(fxml, 'rb') as fr:
-            configXMLString = fr.read()
-            if createVM(URL, configXMLString):
-                newVM = VM()
-                newVM.vname = appName + tempObj.tname
-                newVM.vusername = userObj
-                newVM.vtempname = tempObj
-                newHost = Host()
-                newHost.hname = appName + tempObj.tname
-                newHost.hstatus = '关闭'
-                newHost.haddr = '暂无'
-                newHost.belong = userObj
-                newVM.save()
-                newHost.save()
-
+        xmlFile, domName = xmlConfig(tempObj, imgObj, appName)
+        configXMLString = Tool.readFile(xmlFile)
+        if createVM(URL, configXMLString):
+            newVM = VM()
+            newVM.vname = domName
+            newVM.vusername = userObj
+            newVM.vtempname = tempObj
+            newHost = Host()
+            newHost.hname = domName
+            newHost.hstatus = '关闭'
+            newHost.haddr = 'Unknow'
+            newHost.hport = '0'
+            newHost.belong = userObj
+            newVM.save()
+            newHost.save()
         return redirect(reverse('chmapp:host'))
 
 
@@ -273,8 +281,11 @@ def open(request):
             hostObj = Host.objects.get(hname=hostname)
             hostObj.hstatus = status
             hostObj.haddr = addr
+            command = "virsh vncdisplay " + hostname + " |awk -F':' '{print $2}'"
+            port = str(5900 + int(commands.getoutput(command)))
+            hostObj.hport = port
             hostObj.save()
-            return redirect(reverse('chmapp:host'))
+        return redirect(reverse('chmapp:host'))
 
 
 def shutdown(request):
@@ -285,7 +296,7 @@ def shutdown(request):
             hostObj = Host.objects.get(hname=hostname)
             hostObj.hstatus = status
             hostObj.save()
-            return redirect(reverse('chmapp:host'))
+        return redirect(reverse('chmapp:host'))
 
 
 def shutoff(request):
@@ -303,7 +314,13 @@ def remove(request):
     if request.method == 'POST':
         hostname = request.POST.get('hostname')
         if removeVM(URL, hostname):
-            hostObj = Host.objects.get(hname=hostname)
+            hostObj = Host.objects.get(hname=hostname, isDelete=False)
             hostObj.isDelete = True
             hostObj.save()
-            return redirect(reverse('chmapp:host'))
+        return redirect(reverse('chmapp:host'))
+
+
+def connect(request):
+    # if request.method == 'POST':
+    #     hostname = request.POST.get('hostname')
+    return redirect(reverse('chmapp:host'))

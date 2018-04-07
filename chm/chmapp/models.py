@@ -23,6 +23,7 @@ class Host(models.Model):
     hname = models.CharField(max_length=20)
     hstatus = models.CharField(max_length=10)
     haddr = models.CharField(max_length=20)
+    hport = models.CharField(max_length=10)
     dateTime = models.DateTimeField(auto_now_add=True)
     isDelete = models.BooleanField(default=False)
     belong = models.ForeignKey('User')

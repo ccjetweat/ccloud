@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^shutdown/$', views.shutdown, name='shutdown'),
     url(r'^shutoff/$', views.shutoff, name='shutoff'),
     url(r'^remove/$', views.remove, name='remove'),
+    url(r'^connect/$', views.connect, name='connect'),
 ]

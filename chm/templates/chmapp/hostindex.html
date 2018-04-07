@@ -5,6 +5,7 @@
         <th>云机</th>
         <th>状态</th>
         <th>IP</th>
+        <th>端口</th>
         <th>操作</th>
     </tr>
     {%for host in hostList%}
@@ -12,6 +13,7 @@
         <th>{{host.hname}}</th>
         <th>{{host.hstatus}}</th>
         <th>{{host.haddr}}</th>
+        <th>{{host.hport}}</th>
         <th>
             <form style="display: inline" action="{%url 'chmapp:open'%}" method="post">
                 <input type="hidden" name="hostname" value="{{host.hname}}">
@@ -28,6 +30,10 @@
             <form style="display: inline" action="{%url 'chmapp:remove'%}" method="post">
                 <input type="hidden" name="hostname" value="{{host.hname}}">
                 <input type="submit" name="submit" value="删除">
+            </form>
+            <form style="display: inline" action="{%url 'chmapp:connect'%}" method="post">
+                <input type="hidden" name="hostname" value="{{host.hname}}">
+                <input type="submit" name="submit" value="连接">
             </form>
         </th>
     </tr>

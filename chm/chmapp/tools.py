@@ -17,6 +17,17 @@ class Tool(object):
         return ':'.join(map(lambda x: "%02x" % x, mac))
 
     @staticmethod
+    def readFile(file):
+        content = ''
+        try:
+            fr = open(file, 'rb')
+            content = fr.read()
+        finally:
+            fr.close()
+            return content
+
+
+    @staticmethod
     def copyFile(src, dest):
         try:
             fr = open(src, 'rb')
@@ -51,5 +62,7 @@ if __name__ == '__main__':
     # dest = os.path.join('/root/KVM', 'test.xml')
     # if tool.copyFile(src, dest):
     #     print('OK')
-    mac = tool.randomMAC()
-    print(Tool.uuid_hex())
+    # mac = tool.randomMAC()
+    # print(Tool.uuid_hex())
+    fileInfo = Tool.readFile('/root/KVM/nginx-centos7.xml')
+    print(fileInfo)
