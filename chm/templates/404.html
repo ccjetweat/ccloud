@@ -1,10 +1,39 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>404页面</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> - 404 页面</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/static/chmapp/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/chmapp/css/font-awesome.css" rel="stylesheet">
+    <link href="/static/chmapp/css/animate.css" rel="stylesheet">
+    <link href="/static/chmapp/css/style.css" rel="stylesheet">
+
 </head>
-<body>
-    <img style="width: 100%;height: 500px" src="{%static 'chmapp/images/404.jpg'%}">
+
+<body class="gray-bg">
+
+
+    <div class="middle-box text-center animated fadeInDown">
+        <h1>404</h1>
+        <h3 class="font-bold">页面未找到！</h3>
+
+        <div class="error-desc">
+            抱歉，页面好像去火星了~
+            <form class="form-inline m-t" role="form">
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="请输入您需要查找的内容 …">
+                </div>
+                <button type="submit" class="btn btn-primary">搜索</button>
+            </form>
+        </div>
+    </div>
+
+    <!--全局js -->
+    <script src="/static/chmapp/js/jquery.min.js"></script>
+    <script src="/static/chmapp/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -3,12 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>登录</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="/static/chmapp/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/chmapp/css/font-awesome.css" rel="stylesheet">
+    <link href="/static/chmapp/css/animate.css" rel="stylesheet">
+    <link href="/static/chmapp/css/style.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+    <script>if(window.top !== window.self){ window.top.location = window.location;}</script>
 </head>
-<body>
-    <form action="{%url 'chmapp:auth'%}" method="post">
-        用户名:<input type="text" name="username" value=""><br>
-        密&nbsp;&nbsp;&nbsp;码:<input type="password" name="password" value=""><br>
-        <input type="submit" name="submit" value="登录">
-    </form>
+<body class="gray-bg">
+    <div class="middle-box text-center loginscreen  animated fadeInDown">
+        <div>
+            <div>
+
+                <h1 class="logo-name">C</h1>
+
+            </div>
+            <h3>欢迎使用 CHM</h3>
+
+            <form class="m-t" role="form" action="{%url 'chmapp:auth'%}" method="post">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="用户名" required="" name="username">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="密码" required="" name="password">
+                </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

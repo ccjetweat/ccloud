@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response
 from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
 from .models import User, Image, Template, Host, VM
@@ -14,6 +14,10 @@ URL = 'qemu:///system'
 
 
 # Create your views here.
+def page_not_found(request):
+    return render_to_response('404.html')
+
+
 # 登陆页面
 def login(request):
     try:

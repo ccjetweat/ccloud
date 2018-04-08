@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import url, handler404
 from . import views
 
 urlpatterns = [
@@ -30,3 +30,4 @@ urlpatterns = [
     url(r'^remove/$', views.remove, name='remove'),
     url(r'^connect/$', views.connect, name='connect'),
 ]
+handler404 = "views.render_to_response"
