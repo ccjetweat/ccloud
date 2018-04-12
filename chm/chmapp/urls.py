@@ -1,4 +1,4 @@
-from django.conf.urls import url, handler404
+from django.conf.urls import url, handler404, handler500
 from . import views
 
 urlpatterns = [
@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'^remove/$', views.remove, name='remove'),
     url(r'^connect/$', views.connect, name='connect'),
 ]
-handler404 = "views.render_to_response"
+
+handler404 = "views.page_not_found"
+handler500 = "views.page_error"

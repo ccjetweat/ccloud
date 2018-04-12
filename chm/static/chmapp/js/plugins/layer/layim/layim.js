@@ -15,10 +15,10 @@ var config = {
     aniTime: 200,
     right: -232,
     api: {
-        friend: 'js/plugins/layer/layim/data/friend.json', //好友列表接口
-        group: 'js/plugins/layer/layim/data/group.json', //群组列表接口
-        chatlog: 'js/plugins/layer/layim/data/chatlog.json', //聊天记录接口
-        groups: 'js/plugins/layer/layim/data/groups.json', //群组成员接口
+        friend: 'assets/plugins/layer/layim/data/friend.json', //好友列表接口
+        group: 'assets/plugins/layer/layim/data/group.json', //群组列表接口
+        chatlog: 'assets/plugins/layer/layim/data/chatlog.json', //聊天记录接口
+        groups: 'assets/plugins/layer/layim/data/groups.json', //群组成员接口
         sendurl: '' //发送消息接口
     },
     user: { //当前用户信息

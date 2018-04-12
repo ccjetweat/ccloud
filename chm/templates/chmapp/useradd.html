@@ -1,10 +1,33 @@
 {%extends 'chmapp/index.html'%}
 {%block index_child%}
-添加新用户
-<form action="{%url 'chmapp:usersave'%}" method="post">
-用户名: <input type="text" name="username" value=""><br><br>
-密&nbsp;&nbsp;码: <input type="text" name="password" value=""><br><br>
-描&nbsp;&nbsp;述: <input type="text" name="description" value=""><br><br>
-<input type="submit" name="submit" value="保存">
-</form>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                添加新用户
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form role="form" action="{%url 'chmapp:usersave'%}" method="post">
+                            <div class="form-group">
+                                <label>用户名</label>
+                                <input class="form-control" name="username" placeholder="包含字母和数字">
+                            </div>
+                            <div class="form-group">
+                                <label>密码</label>
+                                <input class="form-control" name="password" placeholder="包含数字和字母">
+                            </div>
+                            <div class="form-group">
+                                <label>描述</label>
+                                <input class="form-control" name="description" placeholder="用户类型描述">
+                            </div>
+                            <button type="submit" class="btn btn-primary">保存</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {%endblock%}

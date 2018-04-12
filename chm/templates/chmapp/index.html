@@ -1,157 +1,99 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="renderer" content="webkit">
-    <title>管理首页</title>
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-
-    <!--[if lt IE 9]>
-    <meta http-equiv="refresh" content="0;ie.html" />
-    <![endif]-->
-
-    <link rel="shortcut icon" href="favicon.ico">
-    <link href="/static/chmapp/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
-    <link href="/static/chmapp/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
-    <link href="/static/chmapp/css/animate.css" rel="stylesheet">
-    <link href="/static/chmapp/css/style.css?v=4.1.0" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>chm管理系统</title>
+    <!-- Bootstrap Styles-->
+    <link href="/static/chmapp/css/assets/bootstrap.css" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="/static/chmapp/css/assets/font-awesome.css" rel="stylesheet" />
+    <!-- Morris Chart Styles-->
+    <link href="/static/chmapp/css/assets/morris-0.4.3.min.css" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link href="/static/chmapp/css/assets/custom-styles.css" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <link href="/static/chmapp/css/assets/cssCharts.css" rel="stylesheet">
 </head>
-<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
-    <!--<div id="wrapper-top">-->
-        <!--<span>{{username}}</span>&nbsp;&nbsp;<span>{{status}}</span>&nbsp;&nbsp;-->
-        <!--<span><a class="login" href="{% url 'chmapp:quite' %}">退出</a><br><hr></span>-->
-    <!--</div>-->
-    <!--<div>-->
-        <!--<a href="{% url 'chmapp:user' %}">用户管理</a>-->
-        <!--<a href="{% url 'chmapp:host' %}">云机管理</a>-->
-        <!--<a href="{% url 'chmapp:image' %}">镜像管理</a>-->
-        <!--<a href="{% url 'chmapp:template' %}">模版管理</a>-->
-        <!--<br><hr>-->
-    <!--</div>-->
-    <!--<div>-->
-        <!--{%block index_child%}-->
-
-        <!--{%endblock index_child%}-->
-    <!--</div>-->
+<body>
     <div id="wrapper">
-        <!--<div style="border: 1px solid #ff0000">-->
-            <!--<span></span>-->
-        <!--</div>-->
+        <nav class="navbar navbar-default top-navbar" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="sr-only"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"><strong>CHM</strong></a>
+            </div>
 
-        <!--左侧导航开始-->
-        <nav class="navbar-default navbar-static-side" role="navigation">
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i>{{username}}</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-sign-in fa-fw"></i>{{status}}</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="{% url 'chmapp:quite' %}"><i class="fa fa-sign-out fa-fw"></i>退出</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+        </nav>
+        <!--/. NAV TOP  -->
+        <nav class="navbar-default navbar-side" role="navigation">
             <div class="sidebar-collapse">
-                <ul class="nav" id="side-menu">
-                    <li class="nav-header">
-                        <div class="dropdown profile-element">
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                                <span class="clear">
-                                    <span class="block m-t-xs" style="font-size:20px;">
-                                        <i class="fa fa-area-chart"></i>
-                                        <strong class="font-bold">chm</strong>
-                                    </span>
-                                </span>
-                            </a>
-                        </div>
-                        <div class="logo-element">CHM
-                        </div>
+                <ul class="nav" id="main-menu">
+                    <li>
+                        <a href="{% url 'chmapp:user' %}"><i class="fa fa-gear"></i>用户管理</a>
                     </li>
                     <li>
-                        <div>
-                            <strong class="strong-font-size">{{username}}</strong>
-                        </div>
+                        <a href="{% url 'chmapp:host' %}"><i class="fa fa-gear"></i>主机管理</a>
                     </li>
                     <li>
-                        <div>
-                            <strong class="strong-font-size">{{status}}</strong>
-                        </div>
+                        <a href="{% url 'chmapp:image' %}"><i class="fa fa-gear"></i>镜像管理</a>
                     </li>
                     <li>
-                        <a href="{% url 'chmapp:quite' %}">
-                            <span class="nav-label">退出</span>
-                        </a>
-                    </li>
-
-                    <li class="line dk"></li>
-                    <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
-                        <span class="ng-scope">分类</span>
-                    </li>
-                    <li>
-                        <a href="mailbox.html"><i class="fa fa-envelope"></i> <span class="nav-label">信箱 </span><span class="label label-warning pull-right">16</span></a>
-                        <ul class="nav nav-second-level">
-                            <li><a class="J_menuItem" href="mailbox.html">收件箱</a>
-                            </li>
-                            <li><a class="J_menuItem" href="mail_detail.html">查看邮件</a>
-                            </li>
-                            <li><a class="J_menuItem" href="mail_compose.html">写信</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">表单</span><span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li><a class="J_menuItem" href="form_basic.html">基本表单</a>
-                            </li>
-                            <li><a class="J_menuItem" href="form_validate.html">表单验证</a>
-                            </li>
-                            <li><a class="J_menuItem" href="form_advanced.html">高级插件</a>
-                            </li>
-                            <li><a class="J_menuItem" href="form_wizard.html">表单向导</a>
-                            </li>
-                            <li>
-                                <a href="#">文件上传 <span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="form_webuploader.html">百度WebUploader</a>
-                                    </li>
-                                    <li><a class="J_menuItem" href="form_file_upload.html">DropzoneJS</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="#">编辑器 <span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li><a class="J_menuItem" href="form_editors.html">富文本编辑器</a>
-                                    </li>
-                                    <li><a class="J_menuItem" href="form_simditor.html">simditor</a>
-                                    </li>
-                                    <li><a class="J_menuItem" href="form_markdown.html">MarkDown编辑器</a>
-                                    </li>
-                                    <li><a class="J_menuItem" href="code_editor.html">代码编辑器</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li><a class="J_menuItem" href="layerdate.html">日期选择器layerDate</a>
-                            </li>
-                        </ul>
+                        <a href="{% url 'chmapp:template' %}"><i class="fa fa-gear"></i>模板管理</a>
                     </li>
                 </ul>
-            </div>
-        </nav>
-        <!--左侧导航结束-->
-        <!--右侧部分开始-->
-        <div id="page-wrapper" class="gray-bg dashbard-1">
-            <div class="row border-bottom">
 
+            </div>
+
+        </nav>
+        <!-- /. NAV SIDE  -->
+      
+		<div id="page-wrapper">
+		    <div id="page-inner">
+                {%block index_child%}
+
+                {%endblock index_child%}
             </div>
         </div>
-        <!--右侧部分结束-->
     </div>
-
-    <!-- 全局js -->
-    <script src="/static/chmapp/js/jquery.min.js?v=2.1.4"></script>
-    <script src="/static/chmapp/js/bootstrap.min.js?v=3.3.6"></script>
-    <script src="/static/chmapp/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="/static/chmapp/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-    <script src="/static/chmapp/js/plugins/layer/layer.min.js"></script>
-
-    <!-- 自定义js -->
-    <script src="/static/chmapp/js/hAdmin.js?v=4.1.0"></script>
-    <script type="text/javascript" src="/static/chmapp/js/index.js"></script>
-
-    <!-- 第三方插件 -->
-    <script src="/static/chmapp/js/plugins/pace/pace.min.js"></script>
+                <!-- /. ROW  -->
+    <script src="/static/chmapp/js/assets/jquery-1.10.2.js"></script>
+    <!-- Bootstrap Js -->
+    <script src="/static/chmapp/js/assets/bootstrap.min.js"></script>
+    <!-- Metis Menu Js -->
+    <script src="/static/chmapp/js/assets/jquery.metisMenu.js"></script>
+    <!-- Morris Chart Js -->
+    <script src="/static/chmapp/js/assets/morris/raphael-2.1.0.min.js"></script>
+    <script src="/static/chmapp/js/assets/morris/morris.js"></script>
+	<script src="/static/chmapp/js/assets/easypiechart.js"></script>
+	<script src="/static/chmapp/js/assets/easypiechart-data.js"></script>
+	<script src="/static/chmapp/js/assets/Lightweight-Chart/jquery.chart.js"></script>
+    <!-- Custom Js -->
+    <script src="/static/chmapp/js/assets/custom-scripts.js"></script>
 
 </body>
 </html>

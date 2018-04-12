@@ -1,16 +1,42 @@
 {%extends 'chmapp/index.html'%}
 {%block index_child%}
-修改模版:
-<form action="{%url 'chmapp:tempsave'%}" method="post">
-模版名: {{tempObj.tname}}<input type="hidden" name="tempname" value="{{tempObj.tname}}"><br><br>
-CPU核数: <input type="text" name="cpus" value=""><br><br>
-内&nbsp;&nbsp;&nbsp;存: <input type="text" name="memory" value=""><br><br>
-镜像名:
-<select name="imageSelect">
-    {%for image in imageList%}
-    <option value="{{image.iname}}">{{image.iname}}</option>
-    {%endfor%}
-</select><br>
-<input type="submit" name="tempsubmit" value="保存">
-</form>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                修改模版信息
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form role="form" action="{%url 'chmapp:tempsave'%}" method="post">
+                            <div class="form-group">
+                                <label>模版名</label>
+                                <strong>{{tempObj.tname}}</strong>
+                            </div>
+                            <div class="form-group">
+                                <label>CPU核数</label>
+                                <input class="form-control" name="cpus" placeholder="1-4核">
+                            </div>
+                            <div class="form-group">
+                                <label>内存(单位:M)</label>
+                                <input class="form-control" name="memory" placeholder="最大内存：4096">
+                            </div>
+                            <div class="form-group">
+                                <label>选择镜像</label>
+                                <select class="form-control" name="imageSelect">
+                                    {%for image in imageList%}
+                                    <option value="{{image.iname}}">{{image.iname}}</option>
+                                    {%endfor%}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">保存</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {%endblock%}

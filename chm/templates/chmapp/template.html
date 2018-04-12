@@ -1,43 +1,53 @@
 {%extends 'chmapp/index.html'%}
 {%block index_child%}
-<table border="2">
-    <tr>
-        <th>全选</th>
-        <th>模版</th>
-        <th>CPU</th>
-        <th>内存</th>
-        <th>MAC</th>
-        <th>镜像</th>
-        <th>操作</th>
-    </tr>
-    {%for temp in tempList%}
-    <tr>
-        <th>单选</th>
-        <th>{{temp.tname}}</th>
-        <th>{{temp.tcpus}}</th>
-        <th>{{temp.tmemory}}</th>
-        <th>{{temp.tmac}}</th>
-        <th>{{temp.timgName}}</th>
-        <th>
-            <span>
-                <form style="display: inline" action="{%url 'chmapp:tempmod'%}" method="post">
-                    <input type="hidden" name="tempname" value="{{temp.tname}}">
-                    <input type="submit" name="tempmod" value="修改">
-                </form>
-            </span>
-            <span>
-                <form style="display: inline" action="{%url 'chmapp:tempdel'%}" method="post">
-                    <input type="hidden" name="tempname" value="{{temp.tname}}">
-                    <input type="submit" name="tempdel" value="删除">
-                </form>
-            </span>
-        </th>
-    </tr>
-    {%endfor%}
-</table>
-<span>
-    <form action="{%url 'chmapp:tempadd'%}" method="post">
-        <input type="submit" name="tempadd" value="添加">
-    </form>
-</span>
+
+<div class="row">
+<div class="col-md-12">
+<div class="panel-heading">
+     用户列表
+</div>
+<div class="panel-body">
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+            <thead>
+                <tr>
+                    <th>模版</th>
+                    <th>CPU</th>
+                    <th>内存</th>
+                    <th>MAC</th>
+                    <th>镜像</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {%for temp in tempList%}
+                <tr class="odd gradeX">
+                    <td>{{temp.tname}}</td>
+                    <td>{{temp.tcpus}}</td>
+                    <td>{{temp.tmemory}}</td>
+                    <td>{{temp.tmac}}</td>
+                    <td>{{temp.timgName}}</td>
+                    <td class="center">
+                        <form style="display: inline" action="{%url 'chmapp:tempmod'%}" method="post">
+                            <input type="hidden" name="tempname" value="{{temp.tname}}">
+                            <button type="submit" class="btn btn-primary">修改</button>
+                        </form>
+                        <form style="display: inline" action="{%url 'chmapp:tempdel'%}" method="post">
+                            <input type="hidden" name="tempname" value="{{temp.tname}}">
+                            <button type="submit" class="btn btn-primary">删除</button>
+                        </form>
+                    </td>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        <div class="form-group">
+            <form action="{%url 'chmapp:tempadd'%}" method="post">
+                <button type="submit" class="btn btn-primary">添加</button>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+</div>
 {%endblock%}

@@ -1,9 +1,29 @@
 {%extends 'chmapp/index.html'%}
 {%block index_child%}
-添加新镜像:
-<form action="{%url 'chmapp:imagesave'%}" method="post">
-镜像名: <input type="text" name="imgname" value="">例如: centos7.qcow2<br><br>
-路&nbsp;&nbsp;径: <input type="text" name="imgpath" value=""><br><br>
-<input type="submit" name="imgsubmit" value="保存">
-</form>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                添加新镜像
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <form role="form" action="{%url 'chmapp:imagesave'%}" method="post">
+                            <div class="form-group">
+                                <label>镜像名</label>
+                                <input class="form-control" name="imgname" placeholder="例如: centos7.qcow2">
+                            </div>
+                            <div class="form-group">
+                                <label>路径</label>
+                                <input class="form-control" name="imgpath" placeholder="例如: /root/KVM">
+                            </div>
+                            <button type="submit" class="btn btn-primary">保存</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {%endblock%}

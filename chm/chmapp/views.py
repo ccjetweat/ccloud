@@ -4,11 +4,13 @@ from __future__ import unicode_literals
 from django.shortcuts import render, redirect, render_to_response
 from django.core.urlresolvers import reverse
 from django.contrib.auth import logout
+from django.http import HttpResponse
 from .models import User, Image, Template, Host, VM
 from tools import Tool
 import commands
 from libvirt_api import *
 import os
+import json
 
 URL = 'qemu:///system'
 
@@ -16,6 +18,10 @@ URL = 'qemu:///system'
 # Create your views here.
 def page_not_found(request):
     return render_to_response('404.html')
+
+
+def page_error(request):
+    return render_to_response('500.html')
 
 
 # 登陆页面
@@ -98,7 +104,8 @@ def useradd(request):
 def usermod(request):
     currentName = request.session.get('username')
     status = getUserStatus(currentName)
-    return render(request, 'chmapp/usermod.html', {'username': currentName, 'status': status})
+    modName = request.POST.get('name')
+    return render(request, 'chmapp/usermod.html', {'username': currentName, 'status': status, 'modName': modName})
 
 
 # 删除用户
@@ -109,7 +116,7 @@ def userdel(request):
         if user is not None:
             user.isDelete = True
             user.save()
-            return redirect(reverse('chmapp:user'))
+        return redirect(reverse('chmapp:user'))
 
 
 # 保存用户
@@ -237,11 +244,13 @@ def tempsave(request):
 def host(request):
     currentUser = request.session.get('username')
     status = getUserStatus(currentUser)
+    userObj = User.objects.get(uname=currentUser)
+    info = request.session.get('info')
     if currentUser == 'admin':
         hostList = Host.objects.all().filter(isDelete=False)
     else:
-        hostList = Host.objects.filter(belong=currentUser, isDelete=False)
-    return render(request, 'chmapp/hostindex.html', {'username': currentUser, 'status': status, 'hostList': hostList})
+        hostList = Host.objects.filter(belong=userObj, isDelete=False)
+    return render(request, 'chmapp/hostindex.html', {'username': currentUser, 'status': status, 'hostList': hostList, 'info': info})
 
 
 def vmadd(request):
@@ -252,16 +261,17 @@ def vmadd(request):
 
 
 def vmdefine(request):
-    currentUser = request.session.get('username')
-    userObj = User.objects.get(uname=currentUser)
     if request.method == 'POST':
+        currentUser = request.session.get('username')
+        userObj = User.objects.get(uname=currentUser)
         appName = request.POST.get('appName')
-        tempName = request.POST.get('tempName')
+        tempName = request.POST.get('imageSelect')
         tempObj = Template.objects.get(tname=tempName)
         imgObj = tempObj.timgName
         xmlFile, domName = xmlConfig(tempObj, imgObj, appName)
         configXMLString = Tool.readFile(xmlFile)
-        if createVM(URL, configXMLString):
+        flag, info = createVM(URL, configXMLString)
+        if flag:
             newVM = VM()
             newVM.vname = domName
             newVM.vusername = userObj
@@ -274,13 +284,14 @@ def vmdefine(request):
             newHost.belong = userObj
             newVM.save()
             newHost.save()
+        request.session['info'] = info
         return redirect(reverse('chmapp:host'))
 
 
 def open(request):
     if request.method == 'POST':
         hostname = request.POST.get('hostname')
-        flag, status, addr = startVM(URL, hostname)
+        flag, status, addr, info = startVM(URL, hostname)
         if flag:
             hostObj = Host.objects.get(hname=hostname)
             hostObj.hstatus = status
@@ -289,42 +300,56 @@ def open(request):
             port = str(5900 + int(commands.getoutput(command)))
             hostObj.hport = port
             hostObj.save()
+        request.session['info'] = info
         return redirect(reverse('chmapp:host'))
 
 
 def shutdown(request):
     if request.method == 'POST':
         hostname = request.POST.get('hostname')
-        flag, status = shutdownVM(URL, hostname)
+        flag, status, info = shutdownVM(URL, hostname)
         if flag:
             hostObj = Host.objects.get(hname=hostname)
             hostObj.hstatus = status
+            hostObj.hport = '0'
             hostObj.save()
+        request.session['info'] = info
         return redirect(reverse('chmapp:host'))
 
 
 def shutoff(request):
     if request.method == 'POST':
         hostname = request.POST.get('hostname')
-        flag, status = shutdownVM(URL, hostname)
+        flag, status, info = destroyVM(URL, hostname)
         if flag:
             hostObj = Host.objects.get(hname=hostname)
             hostObj.hstatus = status
+            hostObj.hport = '0'
             hostObj.save()
-            return redirect(reverse('chmapp:host'))
+        request.session['info'] = info
+        return redirect(reverse('chmapp:host'))
 
 
 def remove(request):
     if request.method == 'POST':
         hostname = request.POST.get('hostname')
-        if removeVM(URL, hostname):
+        flag, info = removeVM(URL, hostname)
+        if flag:
             hostObj = Host.objects.get(hname=hostname, isDelete=False)
             hostObj.isDelete = True
             hostObj.save()
+        request.session['info'] = info
         return redirect(reverse('chmapp:host'))
 
 
 def connect(request):
-    # if request.method == 'POST':
-    #     hostname = request.POST.get('hostname')
-    return redirect(reverse('chmapp:host'))
+    if request.method == 'POST':
+        hostname = request.POST.get('hostname')
+        host = Host.objects.get(hname=hostname)
+        port = host.hport
+        os.system('pkill -9 websockify')
+        command = '/root/noVNC/utils/launch.sh --vnc localhost:'+port+' &'
+        if os.system(command) == 0:
+            return render(request, 'chmapp/connect.html')
+        else:
+            return redirect(reverse('chmapp:host'))
