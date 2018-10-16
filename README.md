@@ -1,6 +1,7 @@
 # ccloud
 云主机管理系统
 开发模块：libvirt模块需要单独下载安装，并把/usr/bin/libvirt拷贝到python的site-package下
+
 Babel	0.9.6	2.5.3
 Brlapi	0.6.0	
 Django	1.11.4	2.0.4
